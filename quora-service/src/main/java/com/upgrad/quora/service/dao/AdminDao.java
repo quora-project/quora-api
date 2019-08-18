@@ -16,13 +16,15 @@ public class AdminDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-
     public String deleteUser(final String uuid) throws UserNotFoundException{
         try {
+            
             UserEntity deletedUserEntity = entityManager.createNamedQuery("userByUuid", UserEntity.class)
                     .setParameter("uuid", uuid).getSingleResult();
+            //Getting the uuid of the user that needs to be deleted
             Integer deletedUserId = deletedUserEntity.getId();
             String deletedUserUuid = uuid;
+
             //We need to remove only on UserEntity as all other related table entries will be deleted
             // by @OnDelete annotation function defined for all foreign key fields
             entityManager.remove(deletedUserEntity);
