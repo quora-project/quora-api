@@ -50,7 +50,6 @@ public class AnswerController {
      * @param authorization
      * @return answer response with the status created
      * @throws AuthorizationFailedException and throws InvalidQuestionException
-     *
      */
     @RequestMapping(method = RequestMethod.POST, path = "/question/{questionId}/answer/create", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<?> createAnswer(final AnswerRequest answerRequest, @PathVariable("questionId") final String questionUuId, @RequestHeader final String authorization) throws AuthorizationFailedException, InvalidQuestionException {
@@ -76,7 +75,6 @@ public class AnswerController {
     // type 'editAnswerContent' and also the incoming request is of PUT Type
     // The method calls the editAnswer() method in the business logic service passing the answer to be updated
     // Seeks for a controller method with mapping of type '/answer/edit/{answerId}'
-
     /**
      * Method used edit answer with respect to answer id
      * @param answerEditRequest
@@ -107,10 +105,8 @@ public class AnswerController {
     // type 'deleteAnswer' and incoming request is of DELETE Type
     // The method calls the deleteAnswer() method in the business logic service passing the answer to be deleted
     // seeks for a controller method with mapping of type '/answer/delete/{answerId}'
-
     /**
      * Method is used to delete particular answer for an question with respect to answer id
-     *
      * @param answerUuId
      * @param authorization
      * @return With the status ok
@@ -175,7 +171,7 @@ public class AnswerController {
         return questionContent;
     }
 
-    /**
+    /*
      * method for providing contents string in appended format
      * @param answerList list of questions
      * @param builder    StringBuilder with appended content list.
