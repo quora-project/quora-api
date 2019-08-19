@@ -45,7 +45,6 @@ public class QuestionController {
     @Autowired
     private UserProfileService userProfileService;
 
-
     /**
      * Rest Endpoint method implementation used for creating question for authorized user.
      * Only logged-in user is allowed to create a question.
@@ -61,7 +60,7 @@ public class QuestionController {
     public ResponseEntity<?> createQuestion(final QuestionRequest questionRequest,
                                             @RequestHeader final String authorization)
             throws AuthorizationFailedException {
-        UserAuthTokenEntity userAuthTokenEntity = authorizationService.isValidActiveAuthToken(authorization);
+        UserAuthTokenEntity userAuthTokenEntity = authorizationService.isValidActiveAuthToken(authorization, ActionType.CREATE_QUESTION);
         UserEntity user = userAuthTokenEntity.getUser();
         Question question = new Question();
         question.setUser(userAuthTokenEntity.getUser());
@@ -87,7 +86,7 @@ public class QuestionController {
     public ResponseEntity<?> getAllQuestions(@RequestHeader final String authorization) throws
             AuthorizationFailedException {
         // authorization for the user or owner whether signed in
-        UserAuthTokenEntity userAuthTokenEntity = authorizationService.isValidActiveAuthToken(authorization);
+        UserAuthTokenEntity userAuthTokenEntity = authorizationService.isValidActiveAuthToken(authorization, ActionType.ALL_QUESTION);
         List<Question> questionList = questionService.getAllQuestions();
         StringBuilder builder = new StringBuilder();
         getContentsString(questionList, builder);
@@ -116,7 +115,7 @@ public class QuestionController {
     public ResponseEntity<?> editQuestionContent(QuestionEditRequest questionEditRequest,
                                                  @PathVariable("questionId") final String questionId, @RequestHeader("authorization") final String authorization) throws
             AuthorizationFailedException, InvalidQuestionException {
-        UserAuthTokenEntity userAuthTokenEntity = authorizationService.isValidActiveAuthToken(authorization);
+        UserAuthTokenEntity userAuthTokenEntity = authorizationService.isValidActiveAuthToken(authorization, ActionType.EDIT_QUESTION);
         Question question = questionService.isUserQuestionOwner(questionId, userAuthTokenEntity, ActionType.EDIT_QUESTION);
         question.setContent(questionEditRequest.getContent());
         //edits the question
@@ -124,7 +123,6 @@ public class QuestionController {
         QuestionEditResponse questionEditResponse = new QuestionEditResponse().id(question.getUuid()).status("QUESTION EDITED");
         return new ResponseEntity<QuestionEditResponse>(questionEditResponse, HttpStatus.OK);
     }
-
 
     //Rest Endpoint method implementation used for deleting question by question id.
     //Only logged-in user who is owner of the question or admin is allowed to delete a question
@@ -138,7 +136,7 @@ public class QuestionController {
     public ResponseEntity<?> userDelete(@PathVariable("questionId") final String questionUuId,
                                         @RequestHeader("authorization") final String authorization) throws
             AuthorizationFailedException, InvalidQuestionException {
-        UserAuthTokenEntity userAuthTokenEntity = authorizationService.isValidActiveAuthToken(authorization);
+        UserAuthTokenEntity userAuthTokenEntity = authorizationService.isValidActiveAuthToken(authorization, ActionType.DELETE_QUESTION);
         Question question = questionService.isUserQuestionOwner(questionUuId, userAuthTokenEntity, ActionType.DELETE_QUESTION);
         // deletes the question
         questionService.deleteQuestion(question);
@@ -161,7 +159,7 @@ public class QuestionController {
                                                    @RequestHeader("authorization") final String authorization) throws
             AuthorizationFailedException, UserNotFoundException {
         // user who has logged in
-        UserAuthTokenEntity userAuthTokenEntity = authorizationService.isValidActiveAuthToken(authorization);
+        UserAuthTokenEntity userAuthTokenEntity = authorizationService.isValidActiveAuthToken(authorization, ActionType.ALL_QUESTION_FOR_USER);
         List<Question> questionList = questionService.getQuestionsForUser(uuId);
         StringBuilder contentBuilder = new StringBuilder();
         StringBuilder uuIdBuilder = new StringBuilder();
@@ -182,7 +180,6 @@ public class QuestionController {
      */
 
     public static final StringBuilder getUuIdString(List<Question> questionList, StringBuilder uuIdBuilder) {
-
         for (Question questionObject : questionList) {
             uuIdBuilder.append(questionObject.getUuid()).append(",");
         }

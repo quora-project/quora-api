@@ -14,7 +14,7 @@ import java.time.ZonedDateTime;
 @NamedQueries(
         {
                 @NamedQuery(name = "getAnswerForUuId", query = "select ans from Answer ans where ans.uuid=:uuid"),
-                @NamedQuery(name = "getAnsersForQuestion", query = "select ans from Answer ans where ans.question.uuid=:uuid")
+                @NamedQuery(name = "getAnswersForQuestion", query = "select ans from Answer ans where ans.question.uuid=:uuid")
         }
 )
 public class Answer {
@@ -37,16 +37,14 @@ public class Answer {
     @Column(name = "date")
     private ZonedDateTime date;
 
-    // @OneToOne
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "user_id")
-    @OnDelete(action= OnDeleteAction.CASCADE)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private UserEntity user;
 
-    // @OneToOne
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "question_id")
-    @OnDelete(action= OnDeleteAction.CASCADE)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Question question;
 
     // Generated getter and setter methods for answer table
@@ -95,19 +93,14 @@ public class Answer {
     }
 
 
-
-
     public void setUser(UserEntity user) {
         this.user = user;
     }
 
 
-
-
     public Question getQuestion() {
         return question;
     }
-
 
 
     public void setQuestion(Question question) {
